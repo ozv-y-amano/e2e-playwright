@@ -1,15 +1,6 @@
 import { test, expect } from "@playwright/test";
 
 test("should add and delete a todo", async ({ page }) => {
-	// サーバーの起動確認を追加
-	await page.waitForFunction(
-		() =>
-			fetch("http://localhost:3000/todos")
-				.then((res) => res.ok)
-				.catch(() => false),
-		{ timeout: 30000 }
-	);
-
 	// アプリケーションのURLに移動
 	await page.goto("http://localhost:3000/todos");
 

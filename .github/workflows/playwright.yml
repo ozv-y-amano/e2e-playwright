@@ -2,47 +2,42 @@ name: Playwright Tests
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
   pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
 
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    # リポジトリをチェックアウト
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
+    # Node.jsを設定
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v3
       with:
-        node-version: 'lts/*'
+        node-version: '18' # Playwrightの推奨バージョン
 
-    - name: Start services
-      run: |
-        docker run -d --name web -p 3000:3000 \
-          --health-cmd="curl --fail http://localhost:3000 || exit 1" \
-          --health-interval=10s \
-          --health-timeout=5s \
-          --health-retries=5 \
-          -v ${{ github.workspace }}:/app node:14 \
-          sh -c "cd /app && npm install && npm start"
-        sleep 10  # サーバーの起動を待つために10秒待機
-
+    # パッケージの依存関係をインストール
     - name: Install dependencies
-      run: npm ci
+      run: npm install
 
+    # Playwrightの依存関係をインストール
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install
 
+    # Playwrightのテストを実行
     - name: Run Playwright tests
       run: npx playwright test
 
-    - name: Upload Playwright report
-      uses: actions/upload-artifact@v4
-      if: always()
+    # テスト結果をアップロード
+    - name: Upload Playwright test results
+      uses: actions/upload-artifact@v3
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 30
