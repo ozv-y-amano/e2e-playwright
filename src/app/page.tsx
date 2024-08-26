@@ -1,13 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
+import TodoItem from "@/components/todo/TodoItem";
+import TodoInput from "@/components/todo/TodoInput";
 
-interface Todo {
+type Todo = {
 	id: number;
 	text: string;
 	completed: boolean;
-}
+};
 
-const TodoPage: React.FC = () => {
+const TodoPage = () => {
 	const [todos, setTodos] = useState<Todo[]>([]);
 	const [newTodo, setNewTodo] = useState("");
 
@@ -43,40 +45,22 @@ const TodoPage: React.FC = () => {
 	};
 
 	return (
-		<div className="max-w-md mx-auto mt-10 bg-white p-5 rounded ">
+		<div className="max-w-md mx-auto mt-10 bg-white p-5 rounded">
 			<h1 className="text-2xl font-bold text-center mb-4">To-Do List</h1>
-			<div className="flex mb-4">
-				<input
-					type="text"
-					value={newTodo}
-					onChange={(e) => setNewTodo(e.target.value)}
-					onKeyDown={handleKeyDown}
-					className="border border-gray-300 p-2 flex-grow mr-2 rounded"
-					placeholder="Add a new task"
-				/>
-				<button
-					onClick={addTodo}
-					className="bg-blue-500 text-white px-4 py-2 rounded"
-				>
-					Add
-				</button>
-			</div>
+			<TodoInput
+				newTodo={newTodo}
+				setNewTodo={setNewTodo}
+				handleKeyDown={handleKeyDown}
+				addTodo={addTodo}
+			/>
 			<ul>
 				{todos.map((todo) => (
-					<li
+					<TodoItem
 						key={todo.id}
-						className={`flex justify-between items-center p-2 mb-2 border ${
-							todo.completed ? "bg-green-100 line-through" : "bg-white"
-						} rounded`}
-					>
-						<span onClick={() => toggleTodo(todo.id)}>{todo.text}</span>
-						<button
-							onClick={() => deleteTodo(todo.id)}
-							className="text-red-500"
-						>
-							Delete
-						</button>
-					</li>
+						todo={todo}
+						toggleTodo={toggleTodo}
+						deleteTodo={deleteTodo}
+					/>
 				))}
 			</ul>
 		</div>
