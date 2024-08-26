@@ -18,7 +18,7 @@ test("should add and delete a todo", async ({ page }) => {
 	await page.waitForTimeout(1000);
 
 	// 新しいタスクがリストに追加されたことを確認
-	const todoItem = await page.locator("li", { hasText: newTodoText });
+	const todoItem = page.locator("li", { hasText: newTodoText });
 	await expect(todoItem).toBeVisible();
 
 	// 少し待機
