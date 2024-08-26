@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import TodoItem from "@/components/todo/TodoItem";
-import TodoInput from "@/components/todo/TodoInput";
+import TodoItem from "@/components/todos/TodoItem";
+import TodoInput from "@/components/todos/TodoInput";
 
 type Todo = {
 	id: number;
