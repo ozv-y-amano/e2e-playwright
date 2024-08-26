@@ -31,11 +31,20 @@ jobs:
     - name: Start Application Server
       run: |
         npm run start &
-        sleep 5 # サーバーが起動するまで待機
+
+    # サーバーの起動を待機
+    - name: Wait for Server to be Ready
+      run: npx wait-on http://localhost:3000/todos
 
     # Playwrightの依存関係をインストール
     - name: Install Playwright Browsers
       run: npx playwright install
+
+    # 必要なライブラリをインストール
+    - name: Install required libraries for WebKit
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgstreamer-gl1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-pulseaudio
 
     # Playwrightのテストを実行
     - name: Run Playwright tests
