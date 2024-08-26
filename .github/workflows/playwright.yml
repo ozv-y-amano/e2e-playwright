@@ -19,6 +19,16 @@ jobs:
       with:
         node-version: 'lts/*'
 
+    - name: Start services
+      run: |
+        docker run -d --name web -p 3000:3000 \
+          --health-cmd="curl --fail http://localhost:3000 || exit 1" \
+          --health-interval=10s \
+          --health-timeout=5s \
+          --health-retries=5 \
+          -v ${{ github.workspace }}:/app node:14 \
+          sh -c "cd /app && npm install && npm start"
+
     - name: Install dependencies
       run: npm ci
 
