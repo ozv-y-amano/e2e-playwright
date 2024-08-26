@@ -1,58 +1,27 @@
 name: Playwright Tests
-
 on:
   push:
-    branches:
-      - main
+    branches: [ main, master ]
   pull_request:
-    branches:
-      - main
-
+    branches: [ main, master ]
 jobs:
   test:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
-
     steps:
-    # リポジトリをチェックアウト
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    # Node.jsを設定
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
-        node-version: '18' # Playwrightの推奨バージョン
-
-    # パッケージの依存関係をインストール
+        node-version: lts/*
     - name: Install dependencies
-      run: npm install
-
-    # アプリケーションサーバーをバックグラウンドで起動
-    - name: Start Application Server
-      run: |
-        npm run start &
-
-    # サーバーの起動を待機
-    - name: Wait for Server to be Ready
-      run: npx wait-on http://localhost:3000/todos
-
-    # Playwrightの依存関係をインストール
+      run: npm ci
     - name: Install Playwright Browsers
-      run: npx playwright install
-
-    # 必要なライブラリをインストール
-    - name: Install required libraries for WebKit
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgstreamer-gl1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-pulseaudio
-
-    # Playwrightのテストを実行
+      run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
-
-    # テスト結果をアップロード
-    - name: Upload Playwright test results
-      uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: playwright-report
         path: playwright-report/
+        retention-days: 30
